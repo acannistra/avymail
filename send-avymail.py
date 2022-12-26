@@ -12,9 +12,11 @@ import avalanche
 import s3records
 from api import S3_STORE
 from api import Recipient
+import urllib.parse 
 
 import tqdm
 
+AVYMAIL_API = "https://avymail.fly.dev"
 TEMPLATE_FILE = environ.get('EMAIL_TEMPLATE', "mailtemplate.html")
 A3_API = avalanche.AvalancheAPI()
 RECIPIENTS_DB = s3records.S3Records(S3_STORE)
@@ -44,6 +46,9 @@ def send_forecast(r: Recipient, template: jinja2.Template):
     center_meta = A3_API.get_center_meta(r['center_id'])
 
     forecast = transform_forecast(forecast, center_meta)
+
+    forecast['unsub_url'] = AVYMAIL_API + f"/remove?email={urllib.parse.quote(r['email'])}&center_id={r['center_id']}&zone_id={r['zone_id']}"
+
     rendered = render_forecast(template, forecast)
 
     with open(f"{r['email']}_sent.html", 'w') as f:
