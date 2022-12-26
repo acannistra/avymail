@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
+from fastapi import Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
@@ -71,8 +72,8 @@ async def add_recipient(r: Recipient):
     raise HTTPException(status_code=409, detail="Record already exists.")
     
 
-@app.post('/remove', status_code=200)
-async def remove_recipient(r: Recipient):
+@app.get('/remove', status_code=200)
+async def remove_recipient(r: Recipient = Depends()):
     db = S3Records(S3_STORE)
     try:
         idx = find_record(r, db)
