@@ -27,7 +27,7 @@ function subscribe() {
         zone_id: zone_id
     }
     console.log(JSON.stringify(body))
-    fetch("http://localhost:8000/add", {
+    fetch("https://avymail.fly.dev/add", {
         method: 'POST',
         headers: {
             'content-type': 'application/json'
