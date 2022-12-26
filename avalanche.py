@@ -59,7 +59,10 @@ class AvalancheAPI():
         except KeyError:
             raise APIException(f"{center} not found.")
 
-    def get_forecast(self, center: str, zone_id: str): 
-        center_id = self.centers[center]['center_id']
+    def get_center_meta(self, center_id: str) -> Dict:
+        _url = API_BASE + f"/avalanche-center/{center_id}"
+        return requests.get(_url).json()
+
+    def get_forecast(self, center_id: str, zone_id: str): 
         _url = API_BASE + f"/product?type=forecast&center_id={center_id}&zone_id={zone_id}"
         return requests.get(_url).json()
