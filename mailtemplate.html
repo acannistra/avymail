@@ -148,8 +148,12 @@
                                                 {{published_time}}
                                             </p>
                                             <p
-                                                style="font-family: sans-serif; font-size: 12px; font-weight: lighter; margin: 0; margin-bottom: 15px;">
+                                                style="font-family: sans-serif; font-size: 12px; font-weight: lighter; margin: 0; ">
                                                 <span style="font-weight:bolder;">Updated at:</span> {{updated_at}}
+                                            </p>
+                                            <p
+                                                style="font-family: sans-serif; font-size: 12px; font-weight: lighter; margin: 0; margin-bottom: 15px;">
+                                                <span style="font-weight:bolder;">Expires at:</span> {{expires_time}}
                                             </p>
                                             <table role="presentation" border="0" , cellpadding="" cellspacing="0"
                                                 style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; margin-bottom: 15px;"
@@ -199,7 +203,7 @@
                                             {% for problem in forecast_avalanche_problems %}
                                             <p> <span style="font-family: sans-serif; font-size: 14px; font-weight:
                                                 bolder; margin: 0; margin-bottom: 15px;">
-                                                    {{problem['name']}}</span> <span style="font-style: italic">
+                                                    {{problem['name']}}</span> <span style="fontg-style: italic">
                                                     Likelihood:
                                                     {{problem['likelihood']}} | Size: {{problem['size'][0]}} -
                                                     {{problem['size'][1]}}</span>
