@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "avymail"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.88.0"
+httpx = "^0.23.1"
+aioboto3 = "^10.2.0"
+requests = "^2.28.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
