@@ -1,9 +1,13 @@
 import requests
 from typing import Optional
 from typing import Dict
+from typing import List
 from os import path
 
 API_BASE="https://api.avalanche.org/v2/public"
+
+class APIException(Exception):
+    pass
 
 class AvalancheAPI():
     def __init__(self):
@@ -47,4 +51,15 @@ class AvalancheAPI():
             centers[z['center']['name']]['zones'].append({'id': z['id'], 'name': z['zone_name']})
 
 
-        self.centers = centers
+        return centers
+
+    def get_zones(self, center: str) -> List:
+        try:
+            return self.centers[center]['zones']
+        except KeyError:
+            raise APIException(f"{center} not found.")
+
+    def get_forecast(self, center: str, zone_id: str): 
+        center_id = self.centers[center]['center_id']
+        _url = API_BASE + f"/product?type=forecast&center_id={center_id}&zone_id={zone_id}"
+        return requests.get(_url).json()
