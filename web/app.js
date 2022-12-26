@@ -61,4 +61,48 @@ function subscribe() {
         })
 }
 
+function lookupZoneName(center_id, zone_id) {
+    for (const [center_name, center_val] of Object.entries(zones)) {
+        if (center_val['center_id'] == center_id) {
+            console.log(center_val)
+            for (const zone of center_val['zones']) {
+                console.log(zone)
+                if (zone['id'] == zone_id) {
+                    return zone['name'] + " " + '(' + center_name + ')'
+                }
+            }
+        }
+    }
+}
+
+function lookupEmail() {
+    var email = $("#email-lookup").val()
+    fetch("https://avymail.fly.dev/subs?" + new URLSearchParams({
+        email: email
+    }))
+        .then((res) => {
+            if (res.ok) {
+                return res.json()
+            }
+            return Promise.reject(res)
+        })
+        .then((data) => {
+            $("#subs").append(
+                data.map((s) => {
+                    console.log(s)
+                    var unsub_url = "http://localhost:8000/remove?" + new URLSearchParams({
+                        email: email,
+                        center_id: s['center_id'],
+                        zone_id: s['zone_id']
+                    })
+                    return $("<tr>").append([
+                        $('<td>').text(lookupZoneName(s['center_id'], s['zone_id'])),
+                        $('<td style="text-align: right">').append('<a href="' + unsub_url + '">Unsubscribe</a>')
+                    ])
+                })
+            )
+        })
+}
+
+$("#start-lookup").click(lookupEmail)
 $("#subscribe").click(subscribe)
