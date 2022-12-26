@@ -26,7 +26,6 @@ function subscribe() {
         center_id: center_id,
         zone_id: zone_id
     }
-    console.log(JSON.stringify(body))
     fetch("https://avymail.fly.dev/add", {
         method: 'POST',
         headers: {
@@ -44,9 +43,7 @@ function subscribe() {
             $("#postsub-message").text("Success.")
         })
         .catch((r) => {
-            console.log(r)
             r.json().then((json) => {
-                console.log(json);
                 $("#postsub-message").text("Errors: ")
                 if (json['detail'].constructor === Array) {
                     $("#postsub-message").append(
@@ -64,9 +61,7 @@ function subscribe() {
 function lookupZoneName(center_id, zone_id) {
     for (const [center_name, center_val] of Object.entries(zones)) {
         if (center_val['center_id'] == center_id) {
-            console.log(center_val)
             for (const zone of center_val['zones']) {
-                console.log(zone)
                 if (zone['id'] == zone_id) {
                     return zone['name'] + " " + '(' + center_name + ')'
                 }
@@ -77,6 +72,7 @@ function lookupZoneName(center_id, zone_id) {
 
 function lookupEmail() {
     var email = $("#email-lookup").val()
+    $("#subs").empty()
     fetch("https://avymail.fly.dev/subs?" + new URLSearchParams({
         email: email
     }))
@@ -87,10 +83,11 @@ function lookupEmail() {
             return Promise.reject(res)
         })
         .then((data) => {
-
+            if (data.length == 0) {
+                $("#subs").text("No subscriptions found.")
+            }
             $("#subs").append(
                 data.map((s) => {
-                    console.log(s)
                     var unsub_url = "https://avymail.fly.dev/remove?" + new URLSearchParams({
                         email: email,
                         center_id: s['center_id'],
