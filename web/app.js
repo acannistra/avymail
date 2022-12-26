@@ -87,10 +87,11 @@ function lookupEmail() {
             return Promise.reject(res)
         })
         .then((data) => {
+
             $("#subs").append(
                 data.map((s) => {
                     console.log(s)
-                    var unsub_url = "http://localhost:8000/remove?" + new URLSearchParams({
+                    var unsub_url = "https://avymail.fly.dev/remove?" + new URLSearchParams({
                         email: email,
                         center_id: s['center_id'],
                         zone_id: s['zone_id']
