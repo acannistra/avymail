@@ -43,6 +43,7 @@ def transform_forecast(forecast: dict, center_meta: dict) -> dict:
 
 def send_forecast(r: Recipient, template: jinja2.Template): 
     forecast = A3_API.get_forecast(r['center_id'], r['zone_id'])
+    print(forecast)
     center_meta = A3_API.get_center_meta(r['center_id'])
 
     forecast = transform_forecast(forecast, center_meta)
@@ -51,7 +52,7 @@ def send_forecast(r: Recipient, template: jinja2.Template):
 
     rendered = render_forecast(template, forecast)
 
-    with open(f"{r['email']}_sent.html", 'w') as f:
+    with open(f"{r['email']}_{r['center_id']}_{r['zone_id']}_sent.html", 'w') as f:
         f.write(rendered)
 
 
