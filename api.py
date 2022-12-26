@@ -12,7 +12,7 @@ S3_STORE = "s3://avymail/records.txt"
 
 class Recipient(BaseModel):
     email: str
-    center: str
+    center_id: str
     zone_id: str
     data_last_updated_time: Optional[datetime]
 
