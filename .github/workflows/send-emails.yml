@@ -16,4 +16,13 @@ jobs:
           python-version: '3.9'
           cache: 'pip'
       - run: pip install --upgrade -r requirements.txt
-      - run: python3 ./send-avymail.py
+      - env: 
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+        run: python3 ./send-avymail.py
+
