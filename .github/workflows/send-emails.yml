@@ -2,7 +2,7 @@ name: Send Avalanche Forecast Emails
 on: 
   workflow_dispatch:
   schedule: 
-    - cron: "15,45 * * * *"
+    - cron: "5,35 * * * *"
 jobs: 
   SendEmails:
     runs-on: ubuntu-latest
