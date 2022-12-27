@@ -40,7 +40,7 @@ function subscribe() {
             return Promise.reject(res)
         })
         .then((data) => {
-            $("#postsub-message").text("Success.")
+            $("#postsub-message").text("Success. You'll receive your first e-mail within the next 30 minutes with today's forecast.")
         })
         .catch((r) => {
             r.json().then((json) => {
