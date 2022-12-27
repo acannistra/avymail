@@ -117,7 +117,8 @@ def send_forecast(r: Recipient, template: jinja2.Template, email_config: Optiona
             f.write(rendered)
     
     if email_config:
-        subject = f"Avalanche Forecast for {forecast['forecast_zone'][0]['name']} ({center_meta['id']})"
+        subj_datestamp = forecast['published_at']
+        subject = f"Avalanche Forecast for {forecast['forecast_zone'][0]['name']} ({subj_datestamp})"
         message = create_message(email_config['from_email'], r['email'], subject, rendered)
         email_config['SMTP'].send_message(message)
 
