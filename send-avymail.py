@@ -14,6 +14,7 @@ import avalanche
 import s3records
 from api import S3_STORE
 from api import Recipient
+from api import find_record
 import urllib.parse 
 
 import tqdm
@@ -55,10 +56,14 @@ def transform_forecast(forecast: dict, center_meta: dict, zone_id: str) -> dict:
     center_tz = pytz.timezone(center_meta['timezone'])
 
     # localize timezones
+    utc_times = {}
     for key in forecast.keys():
         if "_time" in key or "created" in key or "updated" in key:
+            utc_times[f"{key}_utc"] = forecast[key]
             newdate = parser.parse(forecast[key]).astimezone(center_tz).strftime("%a %b %d %Y %-I:%M:%S %p %Z")
             forecast[key] = newdate
+
+    forecast.update(utc_times)
 
     # remove references to zones that aren't wanted.
     for zone in forecast['forecast_zone']: 
@@ -75,6 +80,12 @@ def get_template(file: str) -> jinja2.Template:
     with open(file) as _f:
         return jinja2.Environment().from_string(_f.read())
 
+def is_forecast_updated(r: Recipient, forecast: dict) -> bool:
+    try: 
+        return parser.parse(forecast['updated_at_utc']) > parser.parse(r['data_last_updated_time'])
+    except TypeError:
+        # if fail to parse date, consider forecast updated
+        return True
 
 def create_message(source, recipient, subject, content):
     m = EmailMessage()
@@ -84,6 +95,8 @@ def create_message(source, recipient, subject, content):
     m['To'] = recipient
     return m
 
+def update_db_record(db_idx, forecast):
+    RECIPIENTS_DB.data[db_idx]['data_last_updated_time'] = forecast['updated_at_utc']
 
 def send_forecast(r: Recipient, template: jinja2.Template, email_config: Optional[dict], output: bool): 
     forecast = A3_API.get_forecast(r['center_id'], r['zone_id'])
@@ -91,9 +104,13 @@ def send_forecast(r: Recipient, template: jinja2.Template, email_config: Optiona
 
     forecast = transform_forecast(forecast, center_meta, r['zone_id'])
 
+    if not is_forecast_updated(r, forecast):
+        return None
+
     forecast['unsub_url'] = AVYMAIL_API + f"/remove?email={urllib.parse.quote(r['email'])}&center_id={r['center_id']}&zone_id={r['zone_id']}"
 
     rendered = render_forecast(template, forecast)
+
 
     if output:
         with open(f"{r['email']}_{r['center_id']}_{r['zone_id']}_sent.html", 'w') as f:
@@ -103,6 +120,8 @@ def send_forecast(r: Recipient, template: jinja2.Template, email_config: Optiona
         subject = f"Avalanche Forecast for {forecast['forecast_zone'][0]['name']} ({center_meta['id']})"
         message = create_message(email_config['from_email'], r['email'], subject, rendered)
         email_config['SMTP'].send_message(message)
+
+    return forecast
     
 
 
@@ -119,8 +138,12 @@ def main(*args, **kwargs):
         email_config = load_email_config()
         print(email_config)
 
-    for recipient in tqdm.tqdm(recipients):
-        send_forecast(recipient, template, email_config, output=kwargs['output'])
+    for db_idx, recipient in tqdm.tqdm(list(enumerate(recipients))):
+        forecast = send_forecast(recipient, template, email_config, output=kwargs['output'])
+        if forecast:
+            update_db_record(db_idx, forecast)
+    
+    RECIPIENTS_DB.save()
 
     
 if __name__ == "__main__": 
