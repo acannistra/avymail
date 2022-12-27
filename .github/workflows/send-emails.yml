@@ -8,14 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: sendemail
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: pip install poetry==1.0.0
       - run: poetry export -f requirements.txt --output requirements.txt --without-hashes
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           cache: 'pip'
-      - run: pip install -r requirements.txt
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
       - env: 
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
