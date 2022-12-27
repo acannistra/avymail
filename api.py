@@ -95,19 +95,7 @@ SUPPORTED_ZONES = [
     "Northwest Avalanche Center",
     "Central Oregon Avalanche Center",
     "Sawtooth Avalanche Center",
-    "Bridger-Teton Avalanche Center",
-    "Bridgeport Avalanche Center",
-    "Taos Avalanche Center",
-    "Kachina Peaks Avalanche Center",
-    "Wallowa Avalanche Center",
-    "Flathead Avalanche Center",
-    "Sierra Avalanche Center",
-    "West Central Montana Avalanche Center",
-    "Payette Avalanche Center",
-    "Mount Washington Avalanche Center",
-    "Mount Shasta Avalanche Center",
-    "Idaho Panhandle Avalanche Center",
-    "Eastern Sierra Avalanche Center"
+    "Bridger-Teton Avalanche Center"
 ]
         
 @app.get('/zones')
