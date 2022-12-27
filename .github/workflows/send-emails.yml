@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: pip install poetry==1.0.0
+      - run: poetry export -f requirements.txt --output requirements.txt --without-hashes
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
           cache: 'pip'
-      - run: pip install poetry==1.0.0
-      - run: poetry export -f requirements.txt --output requirements.txt --without-hashes
       - run: pip install --no-cache-dir --upgrade -r requirements.txt
