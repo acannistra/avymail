@@ -159,106 +159,153 @@
                                                 style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; margin-bottom: 15px;"
                                                 width="100%">
                                                 <tr>
-                                                    <td style="font-weight: bolder; width: 20px; padding-right: 10px">
-                                                        Today:</td>
-                                                    <td style="text-align:left; width: 50px"><img width="40"
-                                                            src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['lower']}}.png">
-                                                    </td>
-                                                    <td style="text-align:left; width: 50px"><img width="40"
-                                                            src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['middle']}}.png">
-                                                    </td>
-                                                    <td style="text-align:left" ;> <img width="40"
-                                                            src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['upper']}}.png">
-                                                    </td>
-
+                                                    <td style="text-align:center; font-weight: bolder">Today</td>
+                                                    <td style="text-align:center; font-weight: bolder">Tomorrow</td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="font-weight: bolder; width: 20px; padding-right: 10px">
-                                                        Tomorrow:</td>
-                                                    <td style="text-align:left; width: 50px"><img width="40"
-                                                            src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['lower']}}.png">
+
+                                                    <td style="width: 40%; border-right: solid black;">
+                                                        <table>
+                                                            <tr>
+                                                                <td style="width: 50%; text-align:right">Above Treeline:
+                                                                </td>
+                                                                <td style="text-align:center; width: 150px;"> <img
+                                                                        width="40"
+                                                                        src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['upper']}}.png">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="width: 50%; text-align:right"> Treeline:
+                                                                </td>
+                                                                <td style="text-align:center; width: 150px"><img
+                                                                        width="40"
+                                                                        src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['middle']}}.png">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="width: 50%; text-align:right"> Below
+                                                                    Treeline:
+                                                                </td>
+                                                                <td style="text-align:center; width: 150px"><img
+                                                                        width="40"
+                                                                        src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['lower']}}.png">
+                                                                </td>
+                                                            </tr>
+
+
+                                                        </table>
+
                                                     </td>
-                                                    <td style="text-align:left; width: 50px"><img width="40"
+
+                                                    <td style="width: 40%">
+                                                        <table>
+
+                                                            <td style="width: 50%; text-align:right">Above
+                                                                Treeline:</td>
+                                                            <td style="text-align:center; width: 150px;"> <img
+                                                                    width="40"
+                                                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['upper']}}.png">
+                                                            </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 50%; text-align:right"> Treeline:
+                                                    </td>
+                                                    <td style="text-align:center; width: 150px"><img width="40"
                                                             src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['middle']}}.png">
                                                     </td>
-                                                    <td style="text-align:left" ;> <img width="40"
-                                                            src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['upper']}}.png">
-                                                    </td>
-
                                                 </tr>
-
+                                                <tr>
+                                                    <td style="width: 50%; text-align:right"> Below Treeline:
+                                                    </td>
+                                                    <td style="text-align:center; width: 150px"><img width="40"
+                                                            src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['lower']}}.png">
+                                                    </td>
+                                                </tr>
                                             </table>
 
-                                            <p
-                                                style="font-family: sans-serif; font-size: 18px; font-weight: bolder; margin: 0; margin-bottom: 15px;">
-                                                Bottom Line</p>
-
-                                            {{bottom_line}}
-
-
-                                            <p
-                                                style="font-family: sans-serif; font-size: 18px; font-weight: bolder; margin: 0; margin-bottom: 15px;">
-                                                Problems</p>
-
-                                            {% for problem in forecast_avalanche_problems %}
-                                            <p> <span style="font-family: sans-serif; font-size: 14px; font-weight:
-                                                bolder; margin: 0; margin-bottom: 15px;">
-                                                    {{problem['name']}}</span> <span style="fontg-style: italic">
-                                                    Likelihood:
-                                                    {{problem['likelihood']}} | Size: {{problem['size'][0]}} -
-                                                    {{problem['size'][1]}}</span>
-                                            </p>
-
-                                            <p>
-                                                {{problem['discussion']}}
-                                            </p>
-                                            {% endfor %}
-
-                                            <p
-                                                style="font-family: sans-serif; font-size: 18px; font-weight: bolder; margin: 0; margin-bottom: 15px;">
-                                                Forecast Discussion</p>
-
-
-                                            {{hazard_discussion}}
-
-
-
-
-
-
                                         </td>
+
                                     </tr>
+
+
                                 </table>
+
+                                <p
+                                    style="font-family: sans-serif; font-size: 18px; font-weight: bolder; margin: 0; margin-bottom: 15px;">
+                                    Bottom Line</p>
+
+                                {{bottom_line}}
+
+
+                                <p
+                                    style="font-family: sans-serif; font-size: 18px; font-weight: bolder; margin: 0; margin-bottom: 15px;">
+                                    Problems</p>
+
+                                {% for problem in forecast_avalanche_problems %}
+                                <p> <span style="font-family: sans-serif; font-size: 14px; font-weight:
+                                                bolder; margin: 0; margin-bottom: 15px;">
+                                        {{problem['name']}}</span> <span style="fontg-style: italic">
+                                        Likelihood:
+                                        {{problem['likelihood']}} | Size: {{problem['size'][0]}} -
+                                        {{problem['size'][1]}}</span>
+                                </p>
+
+                                <p>
+                                    {{problem['discussion']}}
+                                </p>
+                                {% endfor %}
+
+                                <p
+                                    style="font-family: sans-serif; font-size: 18px; font-weight: bolder; margin: 0; margin-bottom: 15px;">
+                                    Forecast Discussion</p>
+
+
+                                {{hazard_discussion}}
+
+
+
+
+
+
                             </td>
                         </tr>
-
-                        <!-- END MAIN CONTENT AREA -->
                     </table>
-                    <!-- END CENTERED WHITE CONTAINER -->
-
-                    <!-- START FOOTER -->
-                    <div class="footer" style="clear: both; margin-top: 10px; text-align: center; width: 100%;">
-                        <table role="presentation" border="0" cellpadding="0" cellspacing="0"
-                            style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;"
-                            width="100%">
-                            <tr>
-                                <td class="content-block"
-                                    style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #999999; font-size: 12px; text-align: center;"
-                                    valign="top" align="center">
-                                    <br> <a href="{{unsub_url}}"
-                                        style="text-decoration: underline; color: #999999; font-size: 12px; text-align: center;">Unsubscribe</a>.
-
-                                    <code>v.{{code_version}}</code>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <!-- END FOOTER -->
-
-                </div>
             </td>
-            <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">&nbsp;</td>
         </tr>
+
+        <!-- END MAIN CONTENT AREA -->
+    </table>
+    <!-- END CENTERED WHITE CONTAINER -->
+
+    <!-- START FOOTER -->
+    <div class="footer" style="clear: both; margin-top: 10px; text-align: center; width: 100%;">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0"
+            style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
+            <tr>
+                <td class="content-block"
+                    style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #999999; font-size: 12px; text-align: center;"
+                    valign="top" align="center">
+                    <br> <a href="{{unsub_url}}"
+                        style="text-decoration: underline; color: #999999; font-size: 12px; text-align: center;">Unsubscribe</a>.
+
+                    <code>v.{{code_version}}</code>
+                </td>
+            </tr>
+            <tr>
+                <td class="content-block"
+                    style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; color: #999999; font-size: 12px; text-align: center;">
+                    <p>This service is not affiliated with or endorsed by any avalanche
+                        forecasting center.</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- END FOOTER -->
+
+    </div>
+    </td>
+    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">&nbsp;</td>
+    </tr>
     </table>
 </body>
 
