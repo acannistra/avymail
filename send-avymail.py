@@ -70,7 +70,6 @@ def transform_forecast(forecast: dict, center_meta: dict, zone_id: str) -> dict:
         if str(zone['id']) == str(zone_id):
             forecast['forecast_zone'] = [zone]
 
-    print(forecast['forecast_zone'])
 
     forecast['code_version'] = CODE_VERSION_HASH
 
@@ -98,13 +97,13 @@ def create_message(source, recipient, subject, content):
 def update_db_record(db_idx, forecast):
     RECIPIENTS_DB.data[db_idx]['data_last_updated_time'] = forecast['updated_at_utc']
 
-def send_forecast(r: Recipient, template: jinja2.Template, email_config: Optional[dict], output: bool): 
+def send_forecast(r: Recipient, template: jinja2.Template, email_config: Optional[dict], output: bool, send_anyway: bool=False): 
     forecast = A3_API.get_forecast(r['center_id'], r['zone_id'])
     center_meta = A3_API.get_center_meta(r['center_id'])
 
     forecast = transform_forecast(forecast, center_meta, r['zone_id'])
 
-    if not is_forecast_updated(r, forecast):
+    if not send_anyway and not is_forecast_updated(r, forecast):
         return None
 
     forecast['unsub_url'] = AVYMAIL_API + f"/remove?email={urllib.parse.quote(r['email'])}&center_id={r['center_id']}&zone_id={r['zone_id']}"
@@ -117,10 +116,12 @@ def send_forecast(r: Recipient, template: jinja2.Template, email_config: Optiona
             f.write(rendered)
     
     if email_config:
-        subj_datestamp = forecast['published_at']
+        print("EMAIL")
+        subj_datestamp = forecast['published_time']
         subject = f"Avalanche Forecast for {forecast['forecast_zone'][0]['name']} ({subj_datestamp})"
         message = create_message(email_config['from_email'], r['email'], subject, rendered)
         email_config['SMTP'].send_message(message)
+        print(f"sending: {r['zone_id']}-{r['center_id']} to {r['email']} ({len(rendered)} chars)")
 
     return forecast
     
@@ -130,6 +131,7 @@ def send_forecast(r: Recipient, template: jinja2.Template, email_config: Optiona
 @click.command()
 @click.option('--output', '-o', is_flag=True, help="Output rendered email to local file.")
 @click.option('--noemail', is_flag=True)
+@click.option('--ignoretimes', is_flag=True)
 def main(*args, **kwargs):
     template = get_template(TEMPLATE_FILE)
     recipients = get_recipients()
@@ -137,10 +139,9 @@ def main(*args, **kwargs):
 
     if not kwargs['noemail']: 
         email_config = load_email_config()
-        print(email_config)
 
-    for db_idx, recipient in tqdm.tqdm(list(enumerate(recipients))):
-        forecast = send_forecast(recipient, template, email_config, output=kwargs['output'])
+    for db_idx, recipient in  enumerate(recipients):
+        forecast = send_forecast(recipient, template, email_config, output=kwargs['output'], send_anyway=kwargs['ignoretimes'])
         if forecast:
             update_db_record(db_idx, forecast)
     
