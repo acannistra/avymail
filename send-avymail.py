@@ -95,7 +95,7 @@ def get_template(file: str) -> jinja2.Template:
 
 def is_forecast_updated(r: Recipient, forecast: dict) -> bool:
     try:
-        return parser.parse(forecast["updated_at_utc"]) > parser.parse(
+        return parser.parse(forecast["published_at_utc"]) > parser.parse(
             r["data_last_updated_time"]
         )
     except TypeError:
@@ -113,7 +113,7 @@ def create_message(source, recipient, subject, content):
 
 
 def update_db_record(db_idx, forecast):
-    RECIPIENTS_DB.data[db_idx]["data_last_updated_time"] = forecast["updated_at_utc"]
+    RECIPIENTS_DB.data[db_idx]["data_last_updated_time"] = forecast["published_at_utc"]
 
 
 def send_forecast(
