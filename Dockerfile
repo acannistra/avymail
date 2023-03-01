@@ -2,7 +2,7 @@ FROM python:3.10 as reqs-build
 
 WORKDIR /tmp
 
-ENV POETRY_VERSION=1.0.0
+ENV POETRY_VERSION=1.2.0
 RUN pip install --no-cache-dir --upgrade "poetry==$POETRY_VERSION" 
 
 COPY poetry.lock pyproject.toml /tmp
