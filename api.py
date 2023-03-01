@@ -43,6 +43,8 @@ CORS_ORIGINS = [
     "http://anthonycannistra.com",
     "http://localhost",
     "http://localhost:8080",
+    "https://avy.email",
+    "http://avy.email
 ]
 
 app.add_middleware(
