@@ -118,6 +118,11 @@ def update_db_record(db_idx, forecast):
     ]
 
 
+def obfuscate_email(email):
+    split = email.split("@")
+    return split[0][:3] + "..." + "@" + split[1][:3]
+
+
 def send_forecast(
     r: Recipient,
     template: jinja2.Template,
@@ -153,7 +158,7 @@ def send_forecast(
         )
         email_config["SMTP"].send_message(message)
         print(
-            f"sending: {r['zone_id']}-{r['center_id']} to {r['email']} ({len(rendered)} chars)"
+            f"sending: {r['zone_id']}-{r['center_id']} to {obfuscate_email(r['email'])} ({len(rendered)} chars)"
         )
 
     return forecast
