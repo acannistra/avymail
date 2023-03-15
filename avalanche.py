@@ -19,8 +19,8 @@ class AvalancheAPI:
 
         url = API_BASE + "/products/map-layer"
 
-        zones = {}
-        data = requests.get(API_BASE + "/products/map-layer").json()["features"]
+        zones: List[dict] = []
+        data: list = requests.get(API_BASE + "/products/map-layer").json()["features"]
 
         zones = [
             {
@@ -36,16 +36,16 @@ class AvalancheAPI:
 
         centers = set([(z["center"]["name"], z["center"]["id"]) for z in zones])
 
-        centers = {
+        centers_dict = {
             c[0]: {"center_id": c[1], "center_name": c[0], "zones": []} for c in centers
         }
 
         for z in zones:
-            centers[z["center"]["name"]]["zones"].append(
+            centers_dict[z["center"]["name"]]["zones"].append(
                 {"id": z["id"], "name": z["zone_name"]}
             )
 
-        return centers
+        return centers_dict
 
     def get_zones(self, center: str) -> List:
         try:
