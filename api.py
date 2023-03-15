@@ -1,3 +1,4 @@
+from os import environ
 from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi import Depends
@@ -15,7 +16,7 @@ from cachetools import func
 
 import avalanche
 
-S3_STORE = "s3://avymail/records.txt"
+S3_STORE = environ.get("S3_STORE", "s3://avymail/records.txt")
 
 
 @func.ttl_cache(maxsize=1, ttl=3600)
@@ -44,7 +45,7 @@ CORS_ORIGINS = [
     "http://localhost",
     "http://localhost:8080",
     "https://avy.email",
-    "http://avy.email"
+    "http://avy.email",
 ]
 
 app.add_middleware(
@@ -99,12 +100,24 @@ async def remove_recipient(email: str):
     return relevant_records
 
 
-SUPPORTED_ZONES = [
-    "Northwest Avalanche Center",
-    "Central Oregon Avalanche Center",
-    "Sawtooth Avalanche Center",
-    "Bridger-Teton Avalanche Center",
-]
+SUPPORTED_ZONES = set(
+    [
+        "Northwest Avalanche Center",
+        "Central Oregon Avalanche Center",
+        "Sawtooth Avalanche Center",
+        "Bridger-Teton Avalanche Center",
+        "Mount Washington Avalanche Center",
+        "Sierra Avalanche Center",
+        "Flathead Avalanche Center",
+        "Idaho Panhandle Avalanche Center",
+        "Payette Avalanche Center",
+        "Bridgeport Avalanche Center",
+        "Sawtooth Avalanche Center",
+        "Mount Shasta Avalanche Center",
+        "Eastern Sierra Avalanche Center",
+        "West Central Montana Avalanche Center",
+    ]
+)
 
 
 @app.get("/zones")
