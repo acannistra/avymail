@@ -293,6 +293,7 @@
                           <span style="font-weight: bolder">Expires at:</span>
                           {{expires_time}}
                         </p>
+                        {% if danger|length > 0 %}
                         <table
                           role="presentation"
                           border="0"
@@ -394,7 +395,7 @@
                             </td>
                           </tr>
                         </table>
-
+                        {%- endif %}
                         <p
                           style="
                             font-family: sans-serif;
@@ -407,8 +408,8 @@
                           Bottom Line
                         </p>
 
-                        {{bottom_line}}
-
+                        {{bottom_line}} {% if forecast_avalanche_problems|length
+                        > 0 %}
                         <p
                           style="
                             font-family: sans-serif;
@@ -434,7 +435,7 @@
                           >
                             {{problem['name']}}</span
                           >
-                          <span style="fontg-style: italic">
+                          <span style="font-style: italic">
                             Likelihood: {{problem['likelihood']}} | Size:
                             {{problem['size'][0]}} -
                             {{problem['size'][1]}}</span
@@ -442,7 +443,7 @@
                         </p>
 
                         <p>{{problem['discussion']}}</p>
-                        {% endfor %}
+                        {% endfor %} {%- endif -%}
 
                         <p
                           style="
