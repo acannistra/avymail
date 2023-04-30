@@ -355,7 +355,7 @@
                                 </tr>
                               </table>
                             </td>
-
+                            {% if danger|length > 1 %}
                             <td style="width: 40%">
                               <table>
                                 <tr>
@@ -393,6 +393,7 @@
                                 </tr>
                               </table>
                             </td>
+                            {%- endif %}
                           </tr>
                         </table>
                         {%- endif %}

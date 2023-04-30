@@ -143,7 +143,11 @@ def send_forecast(
         + f"/remove?email={urllib.parse.quote(r['email'])}&center_id={r['center_id']}&zone_id={r['zone_id']}"
     )
 
-    rendered = render_forecast(template, forecast)
+    try:
+        rendered = render_forecast(template, forecast)
+    except Exception as e:
+        print(forecast)
+        raise e
 
     if output:
         with open(f"{r['email']}_{r['center_id']}_{r['zone_id']}_sent.html", "w") as f:
