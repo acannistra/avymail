@@ -2,6 +2,11 @@ from io import BytesIO
 import boto3
 from urllib.parse import urlparse
 import json
+from prometheus_client import Gauge
+
+num_records_gauge = Gauge(
+    "s3records_num_records", "number of records in S3Records", labelnames=["record_loc"]
+)
 
 
 class S3Records(object):
@@ -12,6 +17,8 @@ class S3Records(object):
         self.bucket = urlparts.netloc
         self.key = urlparts.path.lstrip("/")
         self.data = self.load(path)
+        self._prom_queue_label = f"{self.bucket}/{self.key}"
+        num_records_gauge.labels(self._prom_queue_label).set(len(self.data))
 
     def load(self, path: str):
         fileobj = BytesIO()
@@ -24,6 +31,7 @@ class S3Records(object):
                 data.append(json.loads(line))
             except json.decoder.JSONDecodeError:
                 pass
+
         return data
 
     def save(self):
@@ -31,3 +39,5 @@ class S3Records(object):
         fileobj.write("\n".join([json.dumps(d) for d in self.data]).encode("utf-8"))
         fileobj.seek(0)
         self.s3_client.upload_fileobj(fileobj, self.bucket, self.key)
+
+        num_records_gauge.labels(self._prom_queue_label).set(len(self.data))

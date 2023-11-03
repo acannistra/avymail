@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi import Depends
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_client import make_asgi_app
 
 from pydantic import BaseModel
 from pydantic import EmailStr
@@ -38,6 +39,8 @@ def remove_timestamps(data: List[Recipient]) -> List[Recipient]:
 
 
 app = FastAPI()
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
 
 CORS_ORIGINS = [
     "https://anthonycannistra.com",

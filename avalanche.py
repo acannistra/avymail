@@ -4,6 +4,12 @@ from typing import Dict
 from typing import List
 from os import path
 
+from prometheus_client import Histogram
+
+centers_histogram = Histogram(
+    "avalanche_load_centers_latency_seconds", "Time taken loading the avalanche centers"
+)
+
 API_BASE = "https://api.avalanche.org/v2/public"
 
 
@@ -15,6 +21,7 @@ class AvalancheAPI:
     def __init__(self):
         self.centers: Optional[Dict] = self.load_centers()
 
+    @centers_histogram.time()
     def load_centers(self) -> Dict:
 
         url = API_BASE + "/products/map-layer"
