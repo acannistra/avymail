@@ -9,6 +9,15 @@ import jinja2
 import pytz
 from dateutil import parser
 from typing import List
+from prometheus_client import (
+    CollectorRegistry,
+    Histogram,
+    push_to_gateway,
+    write_to_textfile,
+)
+from prometheus_client.exposition import _make_handler
+from urllib.request import HTTPHandler
+
 
 import avalanche
 import s3records
@@ -21,6 +30,15 @@ import tqdm
 from smtplib import SMTP
 from email.message import EmailMessage
 
+promregistry = CollectorRegistry()
+email_send_hist = Histogram(
+    "email_send_time",
+    "histogram of times taken for email preparation and sending.",
+    registry=promregistry,
+)
+
+FLY_TOKEN = environ.get("FLY_TOKEN", None)
+FLY_METRICS_API = "https://api.fly.io/prometheus/personal/api/v1/import/prometheus"
 AVYMAIL_API = "https://avymail.fly.dev"
 TEMPLATE_FILE = environ.get("EMAIL_TEMPLATE", "mailtemplate.html")
 A3_API = avalanche.AvalancheAPI()
@@ -28,6 +46,12 @@ RECIPIENTS_DB = s3records.S3Records(S3_STORE)
 CODE_VERSION_HASH = (
     check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
 )
+
+
+def handle_metrics_post(url, method, timeout, headers, data):
+    headers.append(("Authorization", f"Bearer: ${FLY_TOKEN}"))
+    print(url, method, timeout, headers, data)
+    return _make_handler(url, method, timeout, headers, data, HTTPHandler)
 
 
 def load_email_config() -> dict:
@@ -123,6 +147,7 @@ def obfuscate_email(email):
     return split[0][:3] + "..." + "@" + split[1][:3]
 
 
+@email_send_hist.time()
 def send_forecast(
     r: Recipient,
     template: jinja2.Template,
@@ -194,6 +219,19 @@ def main(*args, **kwargs):
             update_db_record(db_idx, forecast)
 
     RECIPIENTS_DB.save()
+
+    if FLY_TOKEN:
+        import time
+
+        metrics_job_id = f"sendemail_{int(time.time())}"
+        push_to_gateway(
+            FLY_METRICS_API,
+            job=metrics_job_id,
+            registry=promregistry,
+            handler=handle_metrics_post,
+        )
+    else:
+        write_to_textfile("metrics.txt", registry=promregistry)
 
 
 if __name__ == "__main__":
