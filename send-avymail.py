@@ -67,14 +67,18 @@ def transform_forecast(forecast: dict, center_meta: dict, zone_id: str) -> dict:
     # localize timezones
     utc_times = {}
     for key in forecast.keys():
-        if "_time" in key or "created" in key or "updated" in key:
-            utc_times[f"{key}_utc"] = forecast[key]
-            newdate = (
-                parser.parse(forecast[key])
-                .astimezone(center_tz)
-                .strftime("%a %b %d %Y %-I:%M:%S %p %Z")
-            )
-            forecast[key] = newdate
+        if ("_time" in key or "created" in key or "updated" in key) and forecast[key]:
+            try:
+                utc_times[f"{key}_utc"] = forecast[key]
+                newdate = (
+                    parser.parse(forecast[key])
+                    .astimezone(center_tz)
+                    .strftime("%a %b %d %Y %-I:%M:%S %p %Z")
+                )
+                forecast[key] = newdate
+            except TypeError as e:
+                print("Error parsing times: Forecast: ", forecast)
+                raise e
 
     forecast.update(utc_times)
 
@@ -182,18 +186,19 @@ def main(*args, **kwargs):
     if not kwargs["noemail"]:
         email_config = load_email_config()
 
-    for db_idx, recipient in enumerate(recipients):
-        forecast = send_forecast(
-            recipient,
-            template,
-            email_config,
-            output=kwargs["output"],
-            send_anyway=kwargs["ignoretimes"],
-        )
-        if forecast:
-            update_db_record(db_idx, forecast)
-
-    RECIPIENTS_DB.save()
+    try:
+        for db_idx, recipient in enumerate(recipients):
+            forecast = send_forecast(
+                recipient,
+                template,
+                email_config,
+                output=kwargs["output"],
+                send_anyway=kwargs["ignoretimes"],
+            )
+            if forecast:
+                update_db_record(db_idx, forecast)
+    finally:
+        RECIPIENTS_DB.save()
 
 
 if __name__ == "__main__":
