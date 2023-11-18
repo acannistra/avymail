@@ -16,9 +16,10 @@ from api import S3_STORE
 from api import Recipient
 from api import find_record
 import urllib.parse
+from retrying import retry
 
 import tqdm
-from smtplib import SMTP
+from smtplib import SMTP, SMTPSenderRefused
 from email.message import EmailMessage
 
 AVYMAIL_API = "https://avymail.fly.dev"
@@ -127,6 +128,11 @@ def obfuscate_email(email):
     return split[0][:3] + "..." + "@" + split[1][:3]
 
 
+@retry(
+    wait_exponential_multiplier=1000,
+    wait_exponential_max=10000,
+    stop_max_attempt_number=7,
+)
 def send_forecast(
     r: Recipient,
     template: jinja2.Template,
@@ -166,7 +172,7 @@ def send_forecast(
         )
         email_config["SMTP"].send_message(message)
         print(
-            f"sending: {r['zone_id']}-{r['center_id']} to {obfuscate_email(r['email'])} ({len(rendered)} chars)"
+            f"sent: {r['zone_id']}-{r['center_id']} to {obfuscate_email(r['email'])} ({len(rendered)} chars)"
         )
 
     return forecast
@@ -178,6 +184,7 @@ def send_forecast(
 )
 @click.option("--noemail", is_flag=True)
 @click.option("--ignoretimes", is_flag=True)
+@click.option("--nosave", is_flag=True)
 def main(*args, **kwargs):
     template = get_template(TEMPLATE_FILE)
     recipients = get_recipients()
@@ -198,7 +205,8 @@ def main(*args, **kwargs):
             if forecast:
                 update_db_record(db_idx, forecast)
     finally:
-        RECIPIENTS_DB.save()
+        if not kwargs["nosave"]:
+            RECIPIENTS_DB.save()
 
 
 if __name__ == "__main__":
