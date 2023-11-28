@@ -19,7 +19,7 @@ import urllib.parse
 from retrying import retry
 
 import tqdm
-from smtplib import SMTP, SMTPSenderRefused
+from smtplib import SMTP, SMTPException
 from email.message import EmailMessage
 
 AVYMAIL_API = "https://avymail.fly.dev"
@@ -88,6 +88,11 @@ def transform_forecast(forecast: dict, center_meta: dict, zone_id: str) -> dict:
         if str(zone["id"]) == str(zone_id):
             forecast["forecast_zone"] = [zone]
 
+    if len(forecast.get("forecast_zone", [])) != 1:
+        raise ValueError(
+            f"number of zones isn't 1! ({len(forecast.get('forecast_zone', []))})"
+        )
+
     forecast["code_version"] = CODE_VERSION_HASH
 
     return forecast
@@ -132,6 +137,7 @@ def obfuscate_email(email):
     wait_exponential_multiplier=1000,
     wait_exponential_max=10000,
     stop_max_attempt_number=7,
+    retry_on_exception=lambda x: isinstance(x, SMTPException),
 )
 def send_forecast(
     r: Recipient,
