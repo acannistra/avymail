@@ -22,7 +22,7 @@ import tqdm
 from smtplib import SMTP, SMTPException
 from email.message import EmailMessage
 
-AVYMAIL_API = "https://avymail.fly.dev"
+AVYMAIL_API = environ.get("AVYMAIL_API", "https://avymail.fly.dev")
 TEMPLATE_FILE = environ.get("EMAIL_TEMPLATE", "mailtemplate.html")
 A3_API = avalanche.AvalancheAPI()
 RECIPIENTS_DB = s3records.S3Records(S3_STORE)
@@ -184,6 +184,10 @@ def send_forecast(
     return forecast
 
 
+def post_email_metric(n: int):
+    requests.post(AVYMAIL_API + "/emails_sent", params={"n": n})
+
+
 @click.command()
 @click.option(
     "--output", "-o", is_flag=True, help="Output rendered email to local file."
@@ -195,6 +199,7 @@ def main(*args, **kwargs):
     template = get_template(TEMPLATE_FILE)
     recipients = get_recipients()
     email_config = None
+    sent_emails = 0
 
     if not kwargs["noemail"]:
         email_config = load_email_config()
@@ -209,10 +214,13 @@ def main(*args, **kwargs):
                 send_anyway=kwargs["ignoretimes"],
             )
             if forecast:
+                sent_emails += 1
                 update_db_record(db_idx, forecast)
     finally:
         if not kwargs["nosave"]:
             RECIPIENTS_DB.save()
+
+    post_email_metric(sent_emails)
 
 
 if __name__ == "__main__":

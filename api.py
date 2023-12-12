@@ -3,14 +3,15 @@ from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi import Depends
 from fastapi.middleware.cors import CORSMiddleware
-from prometheus_client import make_asgi_app
+from prometheus_client import make_asgi_app, Counter
+
 
 from pydantic import BaseModel
 from pydantic import EmailStr
 from s3records import S3Records
 from datetime import datetime
 from typing import Optional
-from typing import List
+from typing import List, Union
 from copy import deepcopy
 from cachetools import func
 
@@ -127,3 +128,11 @@ SUPPORTED_ZONES = set(
 async def zones():
     a = get_avalanche_api()
     return {k: v for k, v in a.centers.items() if k in SUPPORTED_ZONES}
+
+
+emails_sent_counter = Counter("emails_sent_total", "number of emails sent")
+
+
+@app.post("/emails_sent", status_code=200)
+async def emails_sent(n: int):
+    emails_sent_counter.inc(n)
