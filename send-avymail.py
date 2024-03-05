@@ -17,6 +17,7 @@ from api import Recipient
 from api import find_record
 import urllib.parse
 from retrying import retry
+from pprint import pprint
 
 import tqdm
 from smtplib import SMTP, SMTPException
@@ -204,21 +205,32 @@ def main(*args, **kwargs):
     if not kwargs["noemail"]:
         email_config = load_email_config()
 
+    failures = []
     try:
         for db_idx, recipient in enumerate(recipients):
-            forecast = send_forecast(
-                recipient,
-                template,
-                email_config,
-                output=kwargs["output"],
-                send_anyway=kwargs["ignoretimes"],
-            )
+            forecast = None
+            try:
+                forecast = send_forecast(
+                    recipient,
+                    template,
+                    email_config,
+                    output=kwargs["output"],
+                    send_anyway=kwargs["ignoretimes"],
+                )
+            except Exception as e:
+                failures.append((recipient, e))
             if forecast:
                 sent_emails += 1
                 update_db_record(db_idx, forecast)
     finally:
         if not kwargs["nosave"]:
             RECIPIENTS_DB.save()
+
+    if len(failures) > 0:
+        print("Failures:")
+        for f in failures:
+            pprint(f)
+        raise RuntimeError("Some emails failed to send!!!")
 
     post_email_metric(sent_emails)
 
