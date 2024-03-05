@@ -2,6 +2,20 @@ import sys
 import json
 from pprint import pprint
 
+# This script compares JSON objects from two input files (f1 and f2) and maps the zone IDs based on certain conditions.
+# The mapped objects are then printed to the console.
+
+# CLI Usage:
+# python compare_zones.py <f1> <f2> <f3>
+
+# <f1>: Path to the older input JSON file
+# <f2>: Path to the newer input JSON file
+# <f3>: Path to the newline-delimited JSON file to be modified
+
+# Example:
+# python compare_zones.py zones_older.json zones_newer.json records.txt
+
+
 zone_mapping = {}
 
 f1 = sys.argv[1]
