@@ -9,8 +9,6 @@ jobs:
     environment: sendemail
     steps:
       - uses: actions/checkout@v3
-      - run: pip install poetry==1.3.1
-      - run: poetry export -f requirements.txt --output requirements.txt --without-hashes
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
