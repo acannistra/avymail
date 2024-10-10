@@ -1,4 +1,6 @@
 **/*.html
+!mailtemplate.html
+!web/*.html
 **/*.whl
 # Byte-compiled / optimized / DLL files
 __pycache__/

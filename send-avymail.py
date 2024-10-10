@@ -2,7 +2,7 @@ import click
 import requests
 import json
 from os import environ
-from subprocess import check_output
+from subprocess import check_output, CalledProcessError
 from typing import Optional
 
 import jinja2
@@ -27,9 +27,13 @@ AVYMAIL_API = environ.get("AVYMAIL_API", "https://avymail.fly.dev")
 TEMPLATE_FILE = environ.get("EMAIL_TEMPLATE", "mailtemplate.html")
 A3_API = avalanche.AvalancheAPI()
 RECIPIENTS_DB = s3records.S3Records(S3_STORE)
-CODE_VERSION_HASH = (
-    check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
-)
+CODE_VERSION_HASH = ""
+try:
+    CODE_VERSION_HASH = (
+        check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
+    )
+except CalledProcessError:
+    CODE_VERSION_HASH = environ.get("SHORT_SHA", "")
 
 
 def load_email_config() -> dict:
@@ -237,3 +241,8 @@ def main(*args, **kwargs):
 
 if __name__ == "__main__":
     main()
+
+
+def lambda_handler(event, context):
+    main()
+    return {"statusCode": 200, "body": "ok"}
