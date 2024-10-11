@@ -1,5 +1,5 @@
 provider "aws" {
-    region = "us-east-1"  # Change to your preferred region
+    region = "us-east-1"  
   }
   
   resource "aws_sns_topic" "ses_bounce_topic" {
@@ -9,7 +9,7 @@ provider "aws" {
   resource "aws_sns_topic_subscription" "ses_bounce_email_subscription" {
     topic_arn = aws_sns_topic.ses_bounce_topic.arn
     protocol  = "email"
-    endpoint  = "tony.cannistra+avymailnotifications@gmail.com"  # Change to your email address
+    endpoint  = "tony.cannistra+avymailnotifications@gmail.com" 
   }
   
   resource "aws_ses_identity_notification_topic" "ses_complaint_notification" {
@@ -20,7 +20,7 @@ provider "aws" {
 
 
   resource "aws_ses_identity_notification_topic" "ses_bounce_notification" {
-    identity          = "forecast@avy.email"  # Change to your SES verified email address
+    identity          = "forecast@avy.email" 
     notification_type = "Bounce"
     topic_arn         = aws_sns_topic.ses_bounce_topic.arn
   }
