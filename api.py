@@ -85,6 +85,7 @@ async def add_recipient(r: Recipient):
 
 
 @app.get("/remove", status_code=200)
+@app.post("/remove", status_code=200)
 async def remove_recipient(r: Recipient = Depends()):
     db = S3Records(S3_STORE)
     try:
