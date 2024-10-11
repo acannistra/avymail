@@ -1,6 +1,7 @@
 import click
 import requests
 import json
+import datetime
 from os import environ
 from subprocess import check_output, CalledProcessError
 from typing import Optional
@@ -22,7 +23,10 @@ from pprint import pprint
 import tqdm
 from smtplib import SMTP, SMTPException
 from email.message import EmailMessage
+import boto3
+from botocore.exceptions import BotoCoreError, ClientError
 
+SES_CLIENT = boto3.client("sesv2", region_name="us-east-1")
 AVYMAIL_API = environ.get("AVYMAIL_API", "https://avymail.fly.dev")
 TEMPLATE_FILE = environ.get("EMAIL_TEMPLATE", "mailtemplate.html")
 A3_API = avalanche.AvalancheAPI()
@@ -37,20 +41,12 @@ except CalledProcessError:
 
 
 def load_email_config() -> dict:
-    config = {
-        "from_email": environ.get("FROM_EMAIL"),
-        "username": environ.get("SMTP_USERNAME"),
-        "password": environ.get("SMTP_PASSWORD"),
-        "server": environ.get("SMTP_SERVER"),
-    }
+    config = {"from_email": environ.get("FROM_EMAIL")}
     if not all(config.values()):
         raise Exception(
             "Missing one of FROM_EMAIL, SMTP_USERNAME, SMTP_PASSWORD env variables."
         )
 
-    config["SMTP"] = SMTP(config["server"], 587)
-    config["SMTP"].starttls()
-    config["SMTP"].login(config["username"], config["password"])
     return config
 
 
@@ -159,10 +155,7 @@ def send_forecast(
     if not send_anyway and not is_forecast_updated(r, forecast):
         return None
 
-    forecast["unsub_url"] = (
-        AVYMAIL_API
-        + f"/remove?email={urllib.parse.quote(r['email'])}&center_id={r['center_id']}&zone_id={r['zone_id']}"
-    )
+    forecast["unsub_url"] = "https://avy.email/unsubscribe.html"
 
     try:
         rendered = render_forecast(template, forecast)
@@ -175,16 +168,37 @@ def send_forecast(
             f.write(rendered)
 
     if email_config:
-        print("EMAIL")
+
         subj_datestamp = forecast["published_time"]
         subject = f"Avalanche Forecast for {forecast['forecast_zone'][0]['name']} ({subj_datestamp})"
-        message = create_message(
-            email_config["from_email"], r["email"], subject, rendered
-        )
-        email_config["SMTP"].send_message(message)
-        print(
-            f"sent: {r['zone_id']}-{r['center_id']} to {obfuscate_email(r['email'])} ({len(rendered)} chars)"
-        )
+        try:
+            msg = create_message(
+                email_config["from_email"],
+                r["email"],
+                subject,
+                rendered,
+            )
+            msg["List-Unsubscribe"] = (
+                AVYMAIL_API
+                + f"/remove?email={urllib.parse.quote(r['email'])}&center_id={r['center_id']}&zone_id={r['zone_id']}"
+            )
+            response = SES_CLIENT.send_email(
+                FromEmailAddress=email_config["from_email"],
+                Destination={
+                    "ToAddresses": [r["email"]],
+                },
+                Content={
+                    "Raw": {
+                        "Data": msg.as_bytes(),
+                    }
+                },
+            )
+            print(
+                f"sent: {r['zone_id']}-{r['center_id']} to {obfuscate_email(r['email'])} ({len(rendered)} chars)"
+            )
+        except (BotoCoreError, ClientError) as e:
+            print(f"Failed to send email to {r['email']}: {e}")
+            raise e
 
     return forecast
 
@@ -200,9 +214,21 @@ def post_email_metric(n: int):
 @click.option("--noemail", is_flag=True)
 @click.option("--ignoretimes", is_flag=True)
 @click.option("--nosave", is_flag=True)
+@click.option("--test", is_flag=True)
 def main(*args, **kwargs):
     template = get_template(TEMPLATE_FILE)
-    recipients = get_recipients()
+    if not kwargs["test"]:
+        recipients = get_recipients()
+    else:
+        recipients = [
+            dict(
+                email="tony.cannistra+avymailtest@gmail.com",
+                center_id="NWAC",
+                zone_id="1653",
+                data_last_updated_time=datetime.datetime.now()
+                - datetime.timedelta(days=1),
+            )
+        ]
     email_config = None
     sent_emails = 0
 
@@ -231,9 +257,11 @@ def main(*args, **kwargs):
             RECIPIENTS_DB.save()
 
     if len(failures) > 0:
+        import traceback
+
         print("Failures:")
         for f in failures:
-            pprint(f)
+            pprint(traceback.format_exception(f[1]))
         raise RuntimeError("Some emails failed to send!!!")
 
     post_email_metric(sent_emails)
