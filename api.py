@@ -121,6 +121,10 @@ SUPPORTED_ZONES = set(
         "Mount Shasta Avalanche Center",
         "Eastern Sierra Avalanche Center",
         "West Central Montana Avalanche Center",
+        "Wallowa Avalanche Center",
+        "Valdez Avalanche Center",
+        "Hatcher Pass Avalanche Center",
+        "Chugach National Forest Avalanche Center",
     ]
 )
 

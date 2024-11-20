@@ -261,6 +261,13 @@ def main(*args, **kwargs):
 
         print("Failures:")
         for f in failures:
+            pprint(
+                {
+                    "email": obfuscate_email(f[0].email),
+                    "center_id": f[0].center_id,
+                    "zone_id": f[0].zone_id,
+                }
+            )
             pprint(traceback.format_exception(f[1]))
         raise RuntimeError("Some emails failed to send!!!")
 
