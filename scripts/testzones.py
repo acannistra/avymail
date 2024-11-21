@@ -10,7 +10,9 @@ center_status = {}
 
 
 def valid_fcst(fcst):
-    return fcst["bottom_line"] != None and len(fcst["danger"]) > 0
+    return fcst["hazard_discussion"] or (
+        fcst["bottom_line"] != None and len(fcst["danger"]) > 0
+    )
 
 
 test_centers = [
