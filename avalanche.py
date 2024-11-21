@@ -3,6 +3,7 @@ from typing import Optional
 from typing import Dict
 from typing import List
 from os import path
+from cachetools import func
 
 from prometheus_client import Histogram
 
@@ -15,6 +16,9 @@ API_BASE = "https://api.avalanche.org/v2/public"
 
 class APIException(Exception):
     pass
+
+
+FORECAST_CACHE_TTL = 60
 
 
 class AvalancheAPI:
@@ -60,10 +64,12 @@ class AvalancheAPI:
         except KeyError:
             raise APIException(f"{center} not found.")
 
+    @func.ttl_cache(maxsize=50, ttl=FORECAST_CACHE_TTL)
     def get_center_meta(self, center_id: str) -> Dict:
         _url = API_BASE + f"/avalanche-center/{center_id}"
         return requests.get(_url).json()
 
+    @func.ttl_cache(maxsize=50, ttl=FORECAST_CACHE_TTL)
     def get_forecast(self, center_id: str, zone_id: str):
         _url = (
             API_BASE + f"/product?type=forecast&center_id={center_id}&zone_id={zone_id}"
