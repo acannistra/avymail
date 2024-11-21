@@ -5,6 +5,7 @@ import datetime
 from os import environ
 from subprocess import check_output, CalledProcessError
 from typing import Optional
+import copy
 
 import jinja2
 import pytz
@@ -64,6 +65,8 @@ def render_forecast(template: jinja2.Template, forecast: dict) -> str:
 
 
 def transform_forecast(forecast: dict, center_meta: dict, zone_id: str) -> dict:
+    forecast = copy.deepcopy(forecast)
+
     center_tz = pytz.timezone(center_meta["timezone"])
 
     # localize timezones
