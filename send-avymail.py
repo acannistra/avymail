@@ -16,7 +16,6 @@ import avalanche
 import s3records
 from api import S3_STORE
 from api import Recipient
-from api import find_record
 import urllib.parse
 from retrying import retry
 from pprint import pprint
@@ -258,6 +257,8 @@ def main(*args, **kwargs):
     finally:
         if not kwargs["nosave"]:
             RECIPIENTS_DB.save()
+        else:
+            pprint(RECIPIENTS_DB.data)
 
     if len(failures) > 0:
         import traceback
@@ -266,9 +267,10 @@ def main(*args, **kwargs):
         for f in failures:
             pprint(
                 {
-                    "email": obfuscate_email(f[0].email),
-                    "center_id": f[0].center_id,
-                    "zone_id": f[0].zone_id,
+                    "email": obfuscate_email(f[0]["email"]),
+                    "center_id": f[0]["center_id"],
+                    "zone_id": f[0]["zone_id"],
+                    "last_updated": f[0]["data_last_updated_time"],
                 }
             )
             pprint(traceback.format_exception(f[1]))
