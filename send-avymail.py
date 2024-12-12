@@ -96,6 +96,12 @@ def transform_forecast(forecast: dict, center_meta: dict, zone_id: str) -> dict:
             f"number of zones isn't 1! ({len(forecast.get('forecast_zone', []))})"
         )
 
+    # replace "None" danger ratings with No Rating icon
+    for danger in forecast["danger"]:
+        for k, v in danger.items():
+            if v is None:
+                danger[k] = 0
+
     forecast["code_version"] = CODE_VERSION_HASH
 
     return forecast
