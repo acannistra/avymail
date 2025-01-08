@@ -1,108 +1,108 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>
-      The most recent avalanche forecast for {{forecast_zone[0]['name']}}.
-    </title>
-    <style>
-      @media only screen and (max-width: 620px) {
-        table.body h1 {
-          font-size: 28px !important;
-          margin-bottom: 10px !important;
-        }
 
-        table.body p,
-        table.body ul,
-        table.body ol,
-        table.body td,
-        table.body span,
-        table.body a {
-          font-size: 16px !important;
-        }
-
-        table.body .wrapper,
-        table.body .article {
-          padding: 10px !important;
-        }
-
-        table.body .content {
-          padding: 0 !important;
-        }
-
-        table.body .container {
-          padding: 0 !important;
-          width: 100% !important;
-        }
-
-        table.body .main {
-          border-left-width: 0 !important;
-          border-radius: 0 !important;
-          border-right-width: 0 !important;
-        }
-
-        table.body .btn table {
-          width: 100% !important;
-        }
-
-        table.body .btn a {
-          width: 100% !important;
-        }
-
-        table.body .img-responsive {
-          height: auto !important;
-          max-width: 100% !important;
-          width: auto !important;
-        }
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>
+    The most recent avalanche forecast for {{forecast_zone[0]['name']}}.
+  </title>
+  <style>
+    @media only screen and (max-width: 620px) {
+      table.body h1 {
+        font-size: 28px !important;
+        margin-bottom: 10px !important;
       }
 
-      @media all {
-        .ExternalClass {
-          width: 100%;
-        }
-
-        .ExternalClass,
-        .ExternalClass p,
-        .ExternalClass span,
-        .ExternalClass font,
-        .ExternalClass td,
-        .ExternalClass div {
-          line-height: 100%;
-        }
-
-        .apple-link a {
-          color: inherit !important;
-          font-family: inherit !important;
-          font-size: inherit !important;
-          font-weight: inherit !important;
-          line-height: inherit !important;
-          text-decoration: none !important;
-        }
-
-        #MessageViewBody a {
-          color: inherit;
-          text-decoration: none;
-          font-size: inherit;
-          font-family: inherit;
-          font-weight: inherit;
-          line-height: inherit;
-        }
-
-        .btn-primary table td:hover {
-          background-color: #34495e !important;
-        }
-
-        .btn-primary a:hover {
-          background-color: #34495e !important;
-          border-color: #34495e !important;
-        }
+      table.body p,
+      table.body ul,
+      table.body ol,
+      table.body td,
+      table.body span,
+      table.body a {
+        font-size: 16px !important;
       }
-    </style>
-  </head>
 
-  <body
-    style="
+      table.body .wrapper,
+      table.body .article {
+        padding: 10px !important;
+      }
+
+      table.body .content {
+        padding: 0 !important;
+      }
+
+      table.body .container {
+        padding: 0 !important;
+        width: 100% !important;
+      }
+
+      table.body .main {
+        border-left-width: 0 !important;
+        border-radius: 0 !important;
+        border-right-width: 0 !important;
+      }
+
+      table.body .btn table {
+        width: 100% !important;
+      }
+
+      table.body .btn a {
+        width: 100% !important;
+      }
+
+      table.body .img-responsive {
+        height: auto !important;
+        max-width: 100% !important;
+        width: auto !important;
+      }
+    }
+
+    @media all {
+      .ExternalClass {
+        width: 100%;
+      }
+
+      .ExternalClass,
+      .ExternalClass p,
+      .ExternalClass span,
+      .ExternalClass font,
+      .ExternalClass td,
+      .ExternalClass div {
+        line-height: 100%;
+      }
+
+      .apple-link a {
+        color: inherit !important;
+        font-family: inherit !important;
+        font-size: inherit !important;
+        font-weight: inherit !important;
+        line-height: inherit !important;
+        text-decoration: none !important;
+      }
+
+      #MessageViewBody a {
+        color: inherit;
+        text-decoration: none;
+        font-size: inherit;
+        font-family: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+      }
+
+      .btn-primary table td:hover {
+        background-color: #34495e !important;
+      }
+
+      .btn-primary a:hover {
+        background-color: #34495e !important;
+        border-color: #34495e !important;
+      }
+    }
+  </style>
+</head>
+
+<body style="
       background-color: #f6f6f6;
       font-family: sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -112,11 +112,8 @@
       padding: 0;
       -ms-text-size-adjust: 100%;
       -webkit-text-size-adjust: 100%;
-    "
-  >
-    <span
-      class="preheader"
-      style="
+    ">
+  <span class="preheader" style="
         color: transparent;
         display: none;
         height: 0;
@@ -127,36 +124,20 @@
         mso-hide: all;
         visibility: hidden;
         width: 0;
-      "
-      >The most recent avalanche forecast for
-      {{forecast_zone[0]['name']}}.</span
-    >
-    <table
-      role="presentation"
-      border="0"
-      cellpadding="0"
-      cellspacing="0"
-      class="body"
-      style="
+      ">The most recent avalanche forecast for
+    {{forecast_zone[0]['name']}}.</span>
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body" style="
         border-collapse: separate;
         mso-table-lspace: 0pt;
         mso-table-rspace: 0pt;
         background-color: #f6f6f6;
         width: 100%;
-      "
-      width="100%"
-      bgcolor="#f6f6f6"
-    >
-      <tr>
-        <td
-          style="font-family: sans-serif; font-size: 14px; vertical-align: top"
-          valign="top"
-        >
-          &nbsp;
-        </td>
-        <td
-          class="container"
-          style="
+      " width="100%" bgcolor="#f6f6f6">
+    <tr>
+      <td style="font-family: sans-serif; font-size: 14px; vertical-align: top" valign="top">
+        &nbsp;
+      </td>
+      <td class="container" style="
             font-family: sans-serif;
             font-size: 14px;
             vertical-align: top;
@@ -165,339 +146,305 @@
             padding: 10px;
             width: 580px;
             margin: 0 auto;
-          "
-          width="580"
-          valign="top"
-        >
-          <div
-            class="content"
-            style="
+          " width="580" valign="top">
+        <div class="content" style="
               box-sizing: border-box;
               display: block;
               margin: 0 auto;
               max-width: 580px;
               padding: 10px;
-            "
-          >
-            <!-- START CENTERED WHITE CONTAINER -->
-            <table
-              role="presentation"
-              class="main"
-              style="
+            ">
+          <!-- START CENTERED WHITE CONTAINER -->
+          <table role="presentation" class="main" style="
                 border-collapse: separate;
                 mso-table-lspace: 0pt;
                 mso-table-rspace: 0pt;
                 background: #ffffff;
                 border-radius: 3px;
                 width: 100%;
-              "
-              width="100%"
-            >
-              <!-- START MAIN CONTENT AREA -->
-              <tr>
-                <td
-                  class="wrapper"
-                  style="
+              " width="100%">
+            <!-- START MAIN CONTENT AREA -->
+            <tr>
+              <td class="wrapper" style="
                     font-family: sans-serif;
                     font-size: 14px;
                     vertical-align: top;
                     box-sizing: border-box;
                     padding: 20px;
-                  "
-                  valign="top"
-                >
-                  <table
-                    role="presentation"
-                    border="0"
-                    cellpadding="0"
-                    cellspacing="0"
-                    style="
+                  " valign="top">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="
                       border-collapse: separate;
                       mso-table-lspace: 0pt;
                       mso-table-rspace: 0pt;
                       width: 100%;
-                    "
-                    width="100%"
-                  >
-                    <tr>
-                      <td
-                        style="
+                    " width="100%">
+                  <tr>
+                    <td style="
                           font-family: sans-serif;
                           font-size: 14px;
                           vertical-align: top;
-                        "
-                        valign="top"
-                      >
-                        <p
-                          style="
+                        " valign="top">
+                      <p style="
                             font-family: sans-serif;
                             font-size: 20px;
                             margin: 0;
                             margin-bottom: 15px;
-                          "
-                        >
-                          <span style="font-weight: bolder"
-                            >{{forecast_zone[0]['name']}}</span
-                          >
-                          <span
-                            style="
+                          ">
+                        <span style="font-weight: bolder">{{forecast_zone[0]['name']}}</span>
+                        <span style="
                               float: right;
                               font-weight: lighter;
                               font-size: 14px;
-                            "
-                            ><a href="{{forecast_zone[0]['url']}}"
-                              >View in Browser</a
-                            ></span
-                          >
-                        </p>
-                        <p
-                          style="
+                            "><a href="{{forecast_zone[0]['url']}}">View in Browser</a></span>
+                      </p>
+                      <p style="
                             font-family: sans-serif;
                             font-size: 12px;
                             font-weight: lighter;
                             margin: 0;
                             margin-bottom: 15px;
-                          "
-                        >
-                          {{author}}
-                        </p>
-                        <p
-                          style="
+                          ">
+                        {{author}}
+                      </p>
+                      <p style="
                             font-family: sans-serif;
                             font-size: 12px;
                             font-weight: lighter;
                             margin: 0;
-                          "
-                        >
-                          <span style="font-weight: bolder">Published at:</span>
-                          {{published_time}}
-                        </p>
-                        <p
-                          style="
+                          ">
+                        <span style="font-weight: bolder">Published at:</span>
+                        {{published_time}}
+                      </p>
+                      <p style="
                             font-family: sans-serif;
                             font-size: 12px;
                             font-weight: lighter;
                             margin: 0;
-                          "
-                        >
-                          <span style="font-weight: bolder">Updated at:</span>
-                          {{updated_at}}
-                        </p>
-                        <p
-                          style="
+                          ">
+                        <span style="font-weight: bolder">Updated at:</span>
+                        {{updated_at}}
+                      </p>
+                      <p style="
                             font-family: sans-serif;
                             font-size: 12px;
                             font-weight: lighter;
                             margin: 0;
                             margin-bottom: 15px;
-                          "
-                        >
-                          <span style="font-weight: bolder">Expires at:</span>
-                          {{expires_time}}
-                        </p>
-                        {% if danger|length > 0 %}
-                        <table
-                          role="presentation"
-                          border="0"
-                          ,
-                          cellpadding=""
-                          cellspacing="0"
-                          style="
+                          ">
+                        <span style="font-weight: bolder">Expires at:</span>
+                        {{expires_time}}
+                      </p>
+                      {% if danger|length > 0 %}
+                      <table role="presentation" border="0" , cellpadding="" cellspacing="0" style="
                             border-collapse: separate;
                             mso-table-lspace: 0pt;
                             mso-table-rspace: 0pt;
                             width: 100%;
                             margin-bottom: 15px;
-                          "
-                          width="100%"
-                        >
-                          <tr>
-                            <td style="text-align: center; font-weight: bolder">
-                              Current
-                            </td>
-                            <td style="text-align: center; font-weight: bolder">
-                              Outlook
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style="width: 40%; border-right: solid black">
-                              <table>
-                                <tr>
-                                  <td style="width: 60%; text-align: right">
-                                    Above Treeline:
-                                  </td>
-                                  <td style="text-align: center; width: 150px">
-                                    <img
-                                      height="40"
-                                      src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['upper']}}.png"
-                                    />
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="width: 60%; text-align: right">
-                                    Treeline:
-                                  </td>
-                                  <td style="text-align: center; width: 150px">
-                                    <img
-                                      height="40"
-                                      src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['middle']}}.png"
-                                    />
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="width: 60%; text-align: right">
-                                    Below Treeline:
-                                  </td>
-                                  <td style="text-align: center; width: 150px">
-                                    <img
-                                      height="40"
-                                      src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['lower']}}.png"
-                                    />
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                            {% if danger|length > 1 %}
-                            <td style="width: 40%">
-                              <table>
-                                <tr>
-                                  <td style="width: 60%; text-align: right">
-                                    Above Treeline:
-                                  </td>
-                                  <td style="text-align: center; width: 150px">
-                                    <img
-                                      height="40"
-                                      src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['upper']}}.png"
-                                    />
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="width: 60%; text-align: right">
-                                    Treeline:
-                                  </td>
-                                  <td style="text-align: center; width: 150px">
-                                    <img
-                                      height="40"
-                                      src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['middle']}}.png"
-                                    />
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="width: 60%; text-align: right">
-                                    Below Treeline:
-                                  </td>
-                                  <td style="text-align: center; width: 150px">
-                                    <img
-                                      height="40"
-                                      src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['lower']}}.png"
-                                    />
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                            {%- endif %}
-                          </tr>
-                        </table>
-                        {%- endif %} {% if bottom_line %}
-                        <p
-                          style="
+                          " width="100%">
+                        <tr>
+                          <td style="text-align: center; font-weight: bolder">
+                            Current
+                          </td>
+                          <td style="text-align: center; font-weight: bolder">
+                            Outlook
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="width: 40%; border-right: solid black">
+                            <table>
+                              <tr>
+                                <td style="width: 60%; text-align: right">
+                                  Above Treeline:
+                                </td>
+                                <td style="text-align: center; width: 150px">
+                                  <img height="40"
+                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['upper']}}.png" />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="width: 60%; text-align: right">
+                                  Treeline:
+                                </td>
+                                <td style="text-align: center; width: 150px">
+                                  <img height="40"
+                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['middle']}}.png" />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="width: 60%; text-align: right">
+                                  Below Treeline:
+                                </td>
+                                <td style="text-align: center; width: 150px">
+                                  <img height="40"
+                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['lower']}}.png" />
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                          {% if danger|length > 1 %}
+                          <td style="width: 40%">
+                            <table>
+                              <tr>
+                                <td style="width: 60%; text-align: right">
+                                  Above Treeline:
+                                </td>
+                                <td style="text-align: center; width: 150px">
+                                  <img height="40"
+                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['upper']}}.png" />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="width: 60%; text-align: right">
+                                  Treeline:
+                                </td>
+                                <td style="text-align: center; width: 150px">
+                                  <img height="40"
+                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['middle']}}.png" />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="width: 60%; text-align: right">
+                                  Below Treeline:
+                                </td>
+                                <td style="text-align: center; width: 150px">
+                                  <img height="40"
+                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['lower']}}.png" />
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                          {%- endif %}
+                        </tr>
+                      </table>
+                      {%- endif %} {% if bottom_line %}
+                      <p style="
                             font-family: sans-serif;
                             font-size: 18px;
                             font-weight: bolder;
                             margin: 0;
                             margin-bottom: 15px;
-                          "
-                        >
-                          Bottom Line
-                        </p>
+                          ">
+                        Bottom Line
+                      </p>
 
-                        {{bottom_line}} {%- endif %} {% if
-                        forecast_avalanche_problems|length> 0 %}
-                        <p
-                          style="
+                      {{bottom_line}} {%- endif %} {% if
+                      forecast_avalanche_problems|length> 0 %}
+                      <p style="
                             font-family: sans-serif;
                             font-size: 18px;
                             font-weight: bolder;
                             margin: 0;
                             margin-bottom: 15px;
-                          "
-                        >
-                          Problems
-                        </p>
+                          ">
+                        Problems
+                      </p>
 
-                        {% for problem in forecast_avalanche_problems %}
-                        <p>
-                          <span
-                            style="
+                      {% for problem in forecast_avalanche_problems %}
+                      <p>
+                        <span style="
                               font-family: sans-serif;
                               font-size: 14px;
                               font-weight: bolder;
                               margin: 0;
                               margin-bottom: 15px;
-                            "
-                          >
-                            {{problem['name']}}</span
-                          >
-                          <span style="font-style: italic">
-                            Likelihood: {{problem['likelihood']}} | Size:
-                            {{problem['size'][0]}} -
-                            {{problem['size'][1]}}</span
-                          >
-                        </p>
+                            ">
+                          {{problem['name']}}</span>
+                        <span style="font-style: italic">
+                          Likelihood: {{problem['likelihood']}} | Size:
+                          {{problem['size'][0]}} -
+                          {{problem['size'][1]}}</span>
+                      </p>
 
-                        <p>{{problem['discussion']}}</p>
-                        {% endfor %} {%- endif -%}
+                      <p>{{problem['discussion']}}</p>
+                      {% endfor %} {%- endif -%}
 
-                        <p
-                          style="
+                      <p style="
                             font-family: sans-serif;
                             font-size: 18px;
                             font-weight: bolder;
                             margin: 0;
                             margin-bottom: 15px;
-                          "
-                        >
-                          Forecast Discussion
-                        </p>
+                          ">
+                        Forecast Discussion
+                      </p>
 
-                        {{hazard_discussion}}
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
+                      {{hazard_discussion}}
 
-              <!-- END MAIN CONTENT AREA -->
-            </table>
-            <!-- END CENTERED WHITE CONTAINER -->
+                      {% if media|length > 1 %}
+                      <p style="
+                            font-family: sans-serif;
+                            font-size: 18px;
+                            font-weight: bolder;
+                            margin: 0;
+                            margin-bottom: 15px;
+                          ">
+                        Media
+                      </p>
 
-            <!-- START FOOTER -->
-            <div
-              class="footer"
-              style="
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0"
+                        style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;"
+                        width="100%">
+                        <tr>
+                          {% for item in media %}
+                          <td style="padding: 5px; text-align: center; vertical-align: top;">
+                            {% if "video_id" in item['url'] %}
+                            <a href="https://youtube.com/watch?v={{item['url']['video_id']}}" target="_blank"
+                              style="text-decoration: none;">
+                              {% else %}
+                              <a href="{{item['url']['original']}}" target="_blank" style="text-decoration: none;">
+                                {%- endif -%}
+                                <img src="{{item['url']['thumbnail']}}" alt="{{item['caption'] | e}}"
+                                  style="max-width: 100%; height: auto; position: relative;" />
+                              </a>
+                              <p style="font-family: sans-serif; font-size: 12px; margin: 5px 0 0; text-align: center;">
+                                {{item['caption']}}
+                              </p>
+                              {% if "video_id" in item['url'] %}
+                              <p style="font-family: sans-serif; font-size: 12px; margin: 5px 0 0; text-align: center;">
+                                <a href="https://youtube.com/watch?v={{item['url']['video_id']}}" target="_blank">Watch
+                                  Video</a>
+                              </p>
+                              {% else %}
+                              <p style="font-family: sans-serif; font-size: 12px; margin: 5px 0 0; text-align: center;">
+                                <a href="{{item['url']['original']}}" target="_blank">Open Image</a>
+                              </p>
+                              {%- endif -%}
+                          </td>
+                          {% if loop.index % 3 == 0 %}
+                        </tr>
+                        <tr>
+                          {% endif %}
+                          {% endfor %}
+                        </tr>
+                      </table>
+
+                      {%- endif -%}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- END MAIN CONTENT AREA -->
+          </table>
+          <!-- END CENTERED WHITE CONTAINER -->
+
+          <!-- START FOOTER -->
+          <div class="footer" style="
                 clear: both;
                 margin-top: 10px;
                 text-align: center;
                 width: 100%;
-              "
-            >
-              <table
-                role="presentation"
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                style="
+              ">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="
                   border-collapse: separate;
                   mso-table-lspace: 0pt;
                   mso-table-rspace: 0pt;
                   width: 100%;
-                "
-                width="100%"
-              >
-                <tr>
-                  <td
-                    class="content-block"
-                    style="
+                " width="100%">
+              <tr>
+                <td class="content-block" style="
                       font-family: sans-serif;
                       vertical-align: top;
                       padding-bottom: 10px;
@@ -505,81 +452,62 @@
                       color: #999999;
                       font-size: 12px;
                       text-align: center;
-                    "
-                    valign="top"
-                    align="center"
-                  >
-                    <br />
-                    <a
-                      href="{{unsub_url}}"
-                      style="
+                    " valign="top" align="center">
+                  <br />
+                  <a href="{{unsub_url}}" style="
                         text-decoration: underline;
                         color: #999999;
                         font-size: 12px;
                         text-align: center;
-                      "
-                      >Unsubscribe</a
-                    >.
+                      ">Unsubscribe</a>.
 
-                    <code>v.{{code_version}}</code>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    class="content-block"
-                    style="
+                  <code>v.{{code_version}}</code>
+                </td>
+              </tr>
+              <tr>
+                <td class="content-block" style="
                       font-family: sans-serif;
                       vertical-align: top;
                       color: #999999;
                       font-size: 12px;
                       text-align: center;
                       margin-top: 5px;
-                    "
-                  >
-                    <p style="margin: 5px">
-                      This service is not affiliated with or endorsed by any
-                      avalanche forecasting center.
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    class="content-block"
-                    style="
+                    ">
+                  <p style="margin: 5px">
+                    This service is not affiliated with or endorsed by any
+                    avalanche forecasting center.
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td class="content-block" style="
                       font-family: sans-serif;
                       vertical-align: top;
                       color: #999999;
                       font-size: 12px;
                       padding-bottom: 10px;
                       text-align: center;
-                    "
-                  >
-                    <p>
-                      <a
-                        href="https://avy.email"
-                        style="
+                    ">
+                  <p>
+                    <a href="https://avy.email" style="
                           text-decoration: underline;
                           color: #999999;
                           font-size: 12px;
                           text-align: center;
-                        "
-                        >https://avy.email</a
-                      >
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <!-- END FOOTER -->
+                        ">https://avy.email</a>
+                  </p>
+                </td>
+              </tr>
+            </table>
           </div>
-        </td>
-        <td
-          style="font-family: sans-serif; font-size: 14px; vertical-align: top"
-          valign="top"
-        >
-          &nbsp;
-        </td>
-      </tr>
-    </table>
-  </body>
+          <!-- END FOOTER -->
+        </div>
+      </td>
+      <td style="font-family: sans-serif; font-size: 14px; vertical-align: top" valign="top">
+        &nbsp;
+      </td>
+    </tr>
+  </table>
+</body>
+
 </html>

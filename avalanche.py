@@ -5,6 +5,7 @@ from typing import List
 from os import path
 from cachetools import func
 
+import logging
 from prometheus_client import Histogram
 
 centers_histogram = Histogram(
@@ -74,4 +75,5 @@ class AvalancheAPI:
         _url = (
             API_BASE + f"/product?type=forecast&center_id={center_id}&zone_id={zone_id}"
         )
+        print(f"Fetching forecast from {center_id} {zone_id} (url: {_url})")
         return requests.get(_url).json()
