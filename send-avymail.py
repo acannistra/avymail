@@ -232,7 +232,7 @@ def main(*args, **kwargs):
             dict(
                 email="tony.cannistra+avymailtest@gmail.com",
                 center_id="NWAC",
-                zone_id="1653",
+                zone_id="3028",
                 data_last_updated_time=datetime.datetime.now()
                 - datetime.timedelta(days=1),
             )
