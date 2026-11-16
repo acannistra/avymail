@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Forecast Image | avy.email</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        background-color: #f6f6f6;
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 1.4;
+        color: #222222;
+      }
+
+      main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 16px;
+        background-color: #ffffff;
+        border-radius: 3px;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: 0 auto;
+      }
+
+      .message {
+        text-align: center;
+        padding: 24px 0;
+      }
+
+      .links {
+        text-align: center;
+        margin-top: 12px;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 12px;
+        color: #666666;
+      }
+
+      footer a {
+        color: #666666;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="message" id="message">Loading image…</p>
+      <img id="image" alt="Image from an avalanche forecast" hidden />
+      <p class="links" id="links" hidden>
+        <a id="download" href="#" download>Download this image</a>
+      </p>
+    </main>
+    <footer>
+      <p>
+        Images come from the avalanche center's forecast. This service is not
+        affiliated with or endorsed by any avalanche forecasting center.
+      </p>
+      <p><a href="https://avy.email">https://avy.email</a></p>
+    </footer>
+    <script>
+      // Show one forecast image, given as the "src" query parameter.
+      //
+      // The NAC media server sends images as application/octet-stream, so a
+      // direct link downloads the file. An <img> element shows the image
+      // correctly. The page shows images from the NAC media server only, so
+      // that the page cannot show images from other sites.
+      (function () {
+        var ALLOWED_ORIGIN =
+          "https://avalanche-org-media.s3.us-west-2.amazonaws.com";
+        var message = document.getElementById("message");
+        var image = document.getElementById("image");
+
+        function showError(text) {
+          message.textContent = text;
+          message.hidden = false;
+          image.hidden = true;
+        }
+
+        var src = new URLSearchParams(window.location.search).get("src");
+        var url = null;
+        try {
+          url = new URL(src);
+        } catch (e) {
+          url = null;
+        }
+
+        if (!url || url.origin !== ALLOWED_ORIGIN) {
+          showError("This link does not contain a valid forecast image.");
+          return;
+        }
+
+        image.onload = function () {
+          message.hidden = true;
+          image.hidden = false;
+          document.getElementById("download").href = url.href;
+          document.getElementById("links").hidden = false;
+        };
+        image.onerror = function () {
+          showError("The image could not load. Try again later.");
+        };
+        image.src = url.href;
+      })();
+    </script>
+  </body>
+</html>

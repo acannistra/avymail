@@ -386,11 +386,14 @@
                         <tr>
                           {% for item in media %}
                           <td style="padding: 5px; text-align: center; vertical-align: top;">
+                            {#- The NAC media server sends images as a download, so
+                            image links go to the avy.email image viewer page. -#}
+                            {% set image_page = "https://avy.email/image.html?src=" ~ ((item['url']['large'] or item['url']['original']) | urlencode) %}
                             {% if "video_id" in item['url'] %}
                             <a href="https://youtube.com/watch?v={{item['url']['video_id']}}" target="_blank"
                               style="text-decoration: none;">
                               {% else %}
-                              <a href="{{item['url']['original']}}" target="_blank" style="text-decoration: none;">
+                              <a href="{{image_page}}" target="_blank" style="text-decoration: none;">
                                 {%- endif -%}
                                 <img src="{{item['url']['thumbnail']}}" alt="{{item['caption'] | e}}"
                                   style="max-width: 100%; height: auto; position: relative;" />
@@ -405,7 +408,7 @@
                               </p>
                               {% else %}
                               <p style="font-family: sans-serif; font-size: 12px; margin: 5px 0 0; text-align: center;">
-                                <a href="{{item['url']['original']}}" target="_blank">Open Image</a>
+                                <a href="{{image_page}}" target="_blank">Open Image</a>
                               </p>
                               {%- endif -%}
                           </td>
