@@ -4,9 +4,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>
-    The most recent avalanche forecast for {{forecast_zone[0]['name']}}.
-  </title>
+  <title>{{subject}}</title>
   <style>
     @media only screen and (max-width: 620px) {
       table.body h1 {
@@ -35,6 +33,10 @@
       table.body .container {
         padding: 0 !important;
         width: 100% !important;
+      }
+
+      table.body .spacer {
+        display: none !important;
       }
 
       table.body .main {
@@ -124,8 +126,7 @@
         mso-hide: all;
         visibility: hidden;
         width: 0;
-      ">The most recent avalanche forecast for
-    {{forecast_zone[0]['name']}}.</span>
+      ">{{preheader | e}}</span>
   <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body" style="
         border-collapse: separate;
         mso-table-lspace: 0pt;
@@ -134,7 +135,7 @@
         width: 100%;
       " width="100%" bgcolor="#f6f6f6">
     <tr>
-      <td style="font-family: sans-serif; font-size: 14px; vertical-align: top" valign="top">
+      <td class="spacer" style="font-family: sans-serif; font-size: 14px; vertical-align: top" valign="top">
         &nbsp;
       </td>
       <td class="container" style="
@@ -234,88 +235,68 @@
                         <span style="font-weight: bolder">Expires at:</span>
                         {{expires_time}}
                       </p>
+                      {% if not is_forecast %}
+                      <p style="
+                            font-family: sans-serif;
+                            font-size: 14px;
+                            margin: 0;
+                            margin-bottom: 15px;
+                            padding: 10px;
+                            background-color: #eef3f8;
+                            border-left: 4px solid #34495e;
+                          ">
+                        <strong>General avalanche information.</strong>
+                        This is not a daily avalanche forecast and it has no
+                        danger ratings.
+                      </p>
+                      {% endif %}
+                      {#- Danger ratings: one row for each elevation band and one column for
+                      each day. Each rating shows as an icon and as text, so the rating is
+                      visible when the mail client blocks images. The icon has empty alt text
+                      because the text label gives the same information. The label is a div,
+                      not a span, so the phone font-size rule for spans does not enlarge it. -#}
                       {% if danger|length > 0 %}
-                      <table role="presentation" border="0" , cellpadding="" cellspacing="0" style="
-                            border-collapse: separate;
+                      {% set days = danger[:2] %}
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="
+                            border-collapse: collapse;
                             mso-table-lspace: 0pt;
                             mso-table-rspace: 0pt;
                             width: 100%;
                             margin-bottom: 15px;
                           " width="100%">
                         <tr>
-                          <td style="text-align: center; font-weight: bolder">
-                            Current
+                          <td style="width: 30%"></td>
+                          {% for day in days %}
+                          <td style="text-align: center; font-weight: bolder; padding-bottom: 4px;{% if not loop.first %} border-left: 3px solid black;{% endif %}">
+                            {{day.day_label}}
                           </td>
-                          <td style="text-align: center; font-weight: bolder">
-                            Outlook
-                          </td>
+                          {% endfor %}
                         </tr>
+                        {% for key, label in [("upper", "Above Treeline"), ("middle", "Treeline"), ("lower", "Below Treeline")] %}
                         <tr>
-                          <td style="width: 40%; border-right: solid black">
-                            <table>
-                              <tr>
-                                <td style="width: 60%; text-align: right">
-                                  Above Treeline:
-                                </td>
-                                <td style="text-align: center; width: 150px">
-                                  <img height="40"
-                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['upper']}}.png" />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width: 60%; text-align: right">
-                                  Treeline:
-                                </td>
-                                <td style="text-align: center; width: 150px">
-                                  <img height="40"
-                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['middle']}}.png" />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width: 60%; text-align: right">
-                                  Below Treeline:
-                                </td>
-                                <td style="text-align: center; width: 150px">
-                                  <img height="40"
-                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[0]['lower']}}.png" />
-                                </td>
-                              </tr>
-                            </table>
+                          <td style="text-align: right; padding: 4px 6px 4px 0; vertical-align: middle">
+                            {{label}}:
                           </td>
-                          {% if danger|length > 1 %}
-                          <td style="width: 40%">
-                            <table>
-                              <tr>
-                                <td style="width: 60%; text-align: right">
-                                  Above Treeline:
-                                </td>
-                                <td style="text-align: center; width: 150px">
-                                  <img height="40"
-                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['upper']}}.png" />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width: 60%; text-align: right">
-                                  Treeline:
-                                </td>
-                                <td style="text-align: center; width: 150px">
-                                  <img height="40"
-                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['middle']}}.png" />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width: 60%; text-align: right">
-                                  Below Treeline:
-                                </td>
-                                <td style="text-align: center; width: 150px">
-                                  <img height="40"
-                                    src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{danger[1]['lower']}}.png" />
-                                </td>
-                              </tr>
-                            </table>
+                          {% for day in days %}
+                          {% set level = danger_levels[day[key]] %}
+                          <td style="text-align: center; padding: 4px 2px; vertical-align: top;{% if not loop.first %} border-left: 3px solid black;{% endif %}">
+                            <img height="40" alt=""
+                              src="https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{{day[key]}}.png" /><br />
+                            <div style="
+                                  display: inline-block;
+                                  margin-top: 2px;
+                                  padding: 1px 6px;
+                                  border-radius: 3px;
+                                  background-color: {{level.color}};
+                                  color: {{level.text}};
+                                  font-family: sans-serif;
+                                  font-size: 12px;
+                                  font-weight: bold;
+                                ">{% if day[key] > 0 %}{{day[key]}} - {% endif %}{{level.name}}</div>
                           </td>
-                          {%- endif %}
+                          {% endfor %}
                         </tr>
+                        {% endfor %}
                       </table>
                       {%- endif %} {% if bottom_line %}
                       <p style="
@@ -503,7 +484,7 @@
           <!-- END FOOTER -->
         </div>
       </td>
-      <td style="font-family: sans-serif; font-size: 14px; vertical-align: top" valign="top">
+      <td class="spacer" style="font-family: sans-serif; font-size: 14px; vertical-align: top" valign="top">
         &nbsp;
       </td>
     </tr>

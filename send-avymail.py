@@ -2,6 +2,8 @@ import click
 import requests
 import json
 import datetime
+import html
+import re
 from os import environ
 from subprocess import check_output, CalledProcessError
 from typing import Optional
@@ -38,6 +40,59 @@ try:
     )
 except CalledProcessError:
     CODE_VERSION_HASH = environ.get("SHORT_SHA", "")
+
+
+# North American Public Avalanche Danger Scale. The colors are the standard
+# scale colors. "text" is the text color with sufficient contrast on that color.
+DANGER_LEVELS = {
+    0: {"name": "No Rating", "color": "#d9d9d9", "text": "#000000"},
+    1: {"name": "Low", "color": "#50b848", "text": "#000000"},
+    2: {"name": "Moderate", "color": "#fff200", "text": "#000000"},
+    3: {"name": "Considerable", "color": "#f7941e", "text": "#000000"},
+    4: {"name": "High", "color": "#ed1c24", "text": "#000000"},
+    5: {"name": "Extreme", "color": "#231f20", "text": "#ffffff"},
+}
+
+# Centers that publish at or after this local hour publish for the next day.
+# Last season, morning publications were 04:00-08:00 and evening
+# publications were 18:00-21:00.
+NEXT_DAY_PUBLISH_HOUR = 12
+
+PREHEADER_MAX_CHARS = 150
+
+
+def strip_html(text: Optional[str]) -> str:
+    """Return the plain text of an HTML fragment, on one line."""
+    if not text:
+        return ""
+    return " ".join(html.unescape(re.sub(r"<[^>]+>", " ", text)).split())
+
+
+def short_date(d: datetime.date) -> str:
+    return d.strftime("%a %b %-d")
+
+
+def forecast_valid_date(published_utc: str, center_tz) -> datetime.date:
+    """Return the local date that a forecast is valid for.
+
+    The API does not supply this date. A forecast that is published in the
+    afternoon or evening is for the next day.
+    """
+    published = parser.parse(published_utc).astimezone(center_tz)
+    if published.hour >= NEXT_DAY_PUBLISH_HOUR:
+        return published.date() + datetime.timedelta(days=1)
+    return published.date()
+
+
+def is_forecast_expired(
+    forecast: dict, now: Optional[datetime.datetime] = None
+) -> bool:
+    """Return True if the forecast has an expiry time that is in the past."""
+    expires = forecast.get("expires_time_utc")
+    if not expires:
+        return False
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    return parser.parse(expires) <= now
 
 
 def load_email_config() -> dict:
@@ -96,11 +151,54 @@ def transform_forecast(forecast: dict, center_meta: dict, zone_id: str) -> dict:
             f"number of zones isn't 1! ({len(forecast.get('forecast_zone', []))})"
         )
 
-    # replace "None" danger ratings with No Rating icon
-    for danger in forecast["danger"]:
-        for k, v in danger.items():
-            if v is None:
-                danger[k] = 0
+    is_forecast = forecast.get("product_type") == "forecast"
+    forecast["is_forecast"] = is_forecast
+    forecast["product_label"] = (
+        "Avalanche Forecast" if is_forecast else "General Avalanche Information"
+    )
+
+    # Forecasts are for a specific day. Other products use the publication date.
+    if is_forecast:
+        valid_date = forecast_valid_date(forecast["published_time_utc"], center_tz)
+    else:
+        valid_date = (
+            parser.parse(forecast["published_time_utc"]).astimezone(center_tz).date()
+        )
+
+    # Replace missing or unknown danger ratings with "No Rating" (0).
+    # Give each day of ratings a date label.
+    day_offsets = {"current": 0, "tomorrow": 1}
+    for idx, danger in enumerate(forecast["danger"]):
+        for k in ("upper", "middle", "lower"):
+            try:
+                level = int(danger.get(k))
+            except (TypeError, ValueError):
+                level = 0
+            danger[k] = level if level in DANGER_LEVELS else 0
+        offset = day_offsets.get(danger.get("valid_day"), idx)
+        danger["day_label"] = short_date(valid_date + datetime.timedelta(days=offset))
+
+    forecast["danger_levels"] = DANGER_LEVELS
+
+    zone_name = forecast["forecast_zone"][0]["name"]
+    forecast[
+        "subject"
+    ] = f"{forecast['product_label']} for {zone_name} ({short_date(valid_date)})"
+
+    # The preheader is the preview text that mail clients show in the inbox.
+    preview_parts = []
+    if forecast["danger"]:
+        d = forecast["danger"][0]
+        names = {k: DANGER_LEVELS[d[k]]["name"] for k in ("upper", "middle", "lower")}
+        preview_parts.append(
+            f"Above treeline: {names['upper']}. Treeline: {names['middle']}. "
+            f"Below treeline: {names['lower']}."
+        )
+    preview_parts.append(strip_html(forecast.get("bottom_line")))
+    preheader = " ".join(p for p in preview_parts if p)
+    if len(preheader) > PREHEADER_MAX_CHARS:
+        preheader = preheader[:PREHEADER_MAX_CHARS].rsplit(" ", 1)[0] + "…"
+    forecast["preheader"] = preheader or f"{forecast['product_label']} for {zone_name}."
 
     forecast["code_version"] = CODE_VERSION_HASH
 
@@ -163,6 +261,15 @@ def send_forecast(
     if not send_anyway and not is_forecast_updated(r, forecast):
         return None
 
+    # Do not send an expired product. The stored timestamp does not change, so
+    # the recipient gets the next product that the center publishes.
+    if not send_anyway and is_forecast_expired(forecast):
+        print(
+            f"skip expired: {r['center_id']}-{r['zone_id']} "
+            f"(expired {forecast['expires_time_utc']})"
+        )
+        return None
+
     forecast["unsub_url"] = "https://avy.email/unsubscribe.html"
 
     try:
@@ -177,8 +284,7 @@ def send_forecast(
 
     if email_config:
 
-        subj_datestamp = forecast["published_time"]
-        subject = f"Avalanche Forecast for {forecast['forecast_zone'][0]['name']} ({subj_datestamp})"
+        subject = forecast["subject"]
         try:
             msg = create_message(
                 email_config["from_email"],
@@ -220,7 +326,11 @@ def post_email_metric(n: int):
     "--output", "-o", is_flag=True, help="Output rendered email to local file."
 )
 @click.option("--noemail", is_flag=True)
-@click.option("--ignoretimes", is_flag=True)
+@click.option(
+    "--ignoretimes",
+    is_flag=True,
+    help="Send even if the product is not new or has expired.",
+)
 @click.option("--nosave", is_flag=True)
 @click.option("--test", is_flag=True)
 def main(*args, **kwargs):
