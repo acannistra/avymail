@@ -8,6 +8,7 @@ from os import environ
 from subprocess import check_output, CalledProcessError
 from typing import Optional
 import copy
+import sys
 
 import jinja2
 import pytz
@@ -15,6 +16,7 @@ from dateutil import parser
 from typing import List
 
 import avalanche
+import failure_report
 import s3records
 from api import S3_STORE
 from api import Recipient
@@ -321,6 +323,26 @@ def post_email_metric(n: int):
     requests.post(AVYMAIL_API + "/emails_sent", params={"n": n})
 
 
+def send_failure_report(failures: list) -> bool:
+    """Send one email that lists all of the per-recipient failures in this run.
+
+    Returns True if SES accepted the report.
+    """
+    import traceback
+
+    sections = []
+    for recipient, error in failures:
+        sections.append(
+            f"email: {recipient['email']}\n"
+            f"center_id: {recipient['center_id']}\n"
+            f"zone_id: {recipient['zone_id']}\n"
+            f"last_updated: {recipient['data_last_updated_time']}\n"
+            f"error:\n{''.join(traceback.format_exception(error))}"
+        )
+    body = "\n----------\n\n".join(sections)
+    return failure_report.send_failure_email(len(failures), body)
+
+
 @click.command()
 @click.option(
     "--output", "-o", is_flag=True, help="Output rendered email to local file."
@@ -390,6 +412,10 @@ def main(*args, **kwargs):
                 }
             )
             pprint(traceback.format_exception(f[1]))
+        # Do not send a report in a dry run (--noemail).
+        if email_config and send_failure_report(failures):
+            # Tell cron_send.py that the report was sent.
+            sys.exit(failure_report.REPORTED_EXIT_CODE)
         raise RuntimeError("Some emails failed to send!!!")
 
     post_email_metric(sent_emails)
