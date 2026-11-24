@@ -1,0 +1,14 @@
+# Keep subscriber data, infrastructure state, and local scratch files out of the image.
+records*.txt
+zone_backup/
+terraform/
+.serverless/
+out
+outfile
+testout.txt
+metrics.txt
+*.geojson
+zones.json
+map-layer.json
+__pycache__/
+.venv/

@@ -3,7 +3,12 @@
 app = "avymail"
 kill_signal = "SIGINT"
 kill_timeout = 5
-processes = []
+
+[processes]
+  # The API. "/start.sh" is the default command of the tiangolo base image.
+  app = "/start.sh"
+  # Sends forecast emails every 15 minutes. Keep exactly one machine in this group.
+  cron = "supercronic /app/crontab"
 
 [env]
 

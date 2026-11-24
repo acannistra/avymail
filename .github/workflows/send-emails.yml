@@ -1,8 +1,7 @@
 name: Send Avalanche Forecast Emails
 on:
+  # The scheduled sends run on Fly.io (see crontab). Use this workflow for manual runs only.
   workflow_dispatch:
-  schedule:
-    - cron: "7,22,37,52 * * * *"
 jobs:
   SendEmails:
     runs-on: ubuntu-latest
